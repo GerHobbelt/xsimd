@@ -24,6 +24,10 @@
 #include "xtl/xcomplex.hpp"
 #endif
 
+#ifdef __APPLE__
+#include <AvailabilityMacros.h>
+#endif
+
 namespace xsimd
 {
     template <class T, class A>
@@ -136,6 +140,39 @@ namespace xsimd
     inline auto add(T const& x, Tp const& y) noexcept -> decltype(x + y)
     {
         return x + y;
+    }
+
+    template <class T, class Tp>
+    inline typename std::common_type<T, Tp>::type avg(T const& x, Tp const& y) noexcept
+    {
+        using common_type = typename std::common_type<T, Tp>::type;
+        if (std::is_floating_point<common_type>::value)
+            return (x + y) / 2;
+        else if (std::is_unsigned<common_type>::value)
+        {
+            return (x & y) + ((x ^ y) >> 1);
+        }
+        else
+        {
+            // Inspired by
+            // https://stackoverflow.com/questions/5697500/take-the-average-of-two-signed-numbers-in-c
+            auto t = (x & y) + ((x ^ y) >> 1);
+            auto t_u = static_cast<typename std::make_unsigned<common_type>::type>(t);
+            auto avg = t + (static_cast<T>(t_u >> (8 * sizeof(T) - 1)) & (x ^ y));
+            return avg;
+        }
+    }
+
+    template <class T, class Tp>
+    inline typename std::common_type<T, Tp>::type avgr(T const& x, Tp const& y) noexcept
+    {
+        using common_type = typename std::common_type<T, Tp>::type;
+        if (std::is_floating_point<common_type>::value)
+            return avg(x, y);
+        else
+        {
+            return avg(x, y) + ((x ^ y) & 1);
+        }
     }
 
     template <class T>
@@ -502,7 +539,7 @@ namespace xsimd
         return !(x0 == x1);
     }
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) && (MAC_OS_X_VERSION_MIN_REQUIRED > 1080)
     inline float exp10(const float& x) noexcept
     {
         return __exp10f(x);
@@ -519,6 +556,15 @@ namespace xsimd
     inline double exp10(const double& x) noexcept
     {
         return ::exp10(x);
+    }
+#elif !defined(__clang__) && defined(__GNUC__) && (__GNUC__ >= 5)
+    inline float exp10(const float& x) noexcept
+    {
+        return __builtin_exp10f(x);
+    }
+    inline double exp10(const double& x) noexcept
+    {
+        return __builtin_exp10(x);
     }
 #elif defined(_WIN32)
     template <class T, class = typename std::enable_if<std::is_scalar<T>::value>::type>
