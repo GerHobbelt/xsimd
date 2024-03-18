@@ -52,6 +52,10 @@
 #include "./xsimd_fma3_avx.hpp"
 #endif
 
+#if XSIMD_WITH_AVXVNNI
+#include "./xsimd_avxvnni.hpp"
+#endif
+
 #if XSIMD_WITH_AVX2
 #include "./xsimd_avx2.hpp"
 #endif
@@ -66,6 +70,30 @@
 
 #if XSIMD_WITH_AVX512BW
 #include "./xsimd_avx512bw.hpp"
+#endif
+
+#if XSIMD_WITH_AVX512ER
+#include "./xsimd_avx512er.hpp"
+#endif
+
+#if XSIMD_WITH_AVX512PF
+#include "./xsimd_avx512pf.hpp"
+#endif
+
+#if XSIMD_WITH_AVX512IFMA
+#include "./xsimd_avx512ifma.hpp"
+#endif
+
+#if XSIMD_WITH_AVX512VBMI
+#include "./xsimd_avx512vbmi.hpp"
+#endif
+
+#if XSIMD_WITH_AVX512VNNI_AVX512BW
+#include "./xsimd_avx512vnni_avx512bw.hpp"
+#endif
+
+#if XSIMD_WITH_AVX512VNNI_AVX512VBMI
+#include "./xsimd_avx512vnni_avx512vbmi.hpp"
 #endif
 
 #if XSIMD_WITH_NEON

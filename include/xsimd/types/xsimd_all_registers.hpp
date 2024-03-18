@@ -18,8 +18,18 @@
 
 #include "xsimd_avx2_register.hpp"
 #include "xsimd_avx_register.hpp"
+#include "xsimd_avxvnni_register.hpp"
 #include "xsimd_fma3_avx2_register.hpp"
 #include "xsimd_fma3_avx_register.hpp"
+
+#include "xsimd_avx512vnni_avx512bw_register.hpp"
+#include "xsimd_avx512vnni_avx512vbmi_register.hpp"
+
+#include "xsimd_avx512ifma_register.hpp"
+#include "xsimd_avx512vbmi_register.hpp"
+
+#include "xsimd_avx512er_register.hpp"
+#include "xsimd_avx512pf_register.hpp"
 
 #include "xsimd_avx512bw_register.hpp"
 #include "xsimd_avx512cd_register.hpp"

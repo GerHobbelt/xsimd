@@ -550,7 +550,7 @@ namespace xsimd
                 const auto imag_index = vindex<A, as_unsigned_integer_t<T>, 1, 1>();
                 const auto index = rvvabut<as_unsigned_integer_t<T>, A::width>(real_index, imag_index);
                 const auto input = rvvabut<T, A::width>(lo.data, hi.data);
-                const rvv_reg_t<T, A::width* 2> result = __riscv_vrgather(input, index, index.vl);
+                const rvv_reg_t<T, A::width * 2> result = __riscv_vrgather(input, index, index.vl);
 
                 return { rvvget_lo<T, A::width>(result), rvvget_hi<T, A::width>(result) };
             }
@@ -1122,6 +1122,20 @@ namespace xsimd
         inline batch_bool<T, A> ge(batch<T, A> const& lhs, batch<T, A> const& rhs, requires_arch<rvv>) noexcept
         {
             return detail::rvvmsge(lhs, rhs);
+        }
+
+        /*************
+         * Selection *
+         *************/
+        namespace detail
+        {
+            XSIMD_RVV_OVERLOAD(rvvcompress, (__riscv_vcompress), , vec(vec, bvec))
+        }
+        // compress
+        template <class A, class T>
+        inline batch<T, A> compress(batch<T, A> const& x, batch_bool<T, A> const& mask, requires_arch<rvv>) noexcept
+        {
+            return detail::rvvcompress(x, mask);
         }
 
         /***************
