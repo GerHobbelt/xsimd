@@ -12,7 +12,9 @@
 #include "xsimd_benchmark.hpp"
 #include <map>
 
-void benchmark_operation()
+#include "../examples/monolithic_examples.h"
+
+static void benchmark_operation()
 {
     // std::size_t size = 9984;
     std::size_t size = 20000;
@@ -22,7 +24,7 @@ void benchmark_operation()
     xsimd::run_benchmark_2op(xsimd::div_fn(), std::cout, size, 1000);
 }
 
-void benchmark_exp_log()
+static void benchmark_exp_log()
 {
     std::size_t size = 20000;
     xsimd::run_benchmark_1op(xsimd::exp_fn(), std::cout, size, 1000);
@@ -34,7 +36,7 @@ void benchmark_exp_log()
     xsimd::run_benchmark_1op(xsimd::log1p_fn(), std::cout, size, 1000);
 }
 
-void benchmark_trigo()
+static void benchmark_trigo()
 {
     std::size_t size = 20000;
     xsimd::run_benchmark_1op(xsimd::sin_fn(), std::cout, size, 1000);
@@ -45,7 +47,7 @@ void benchmark_trigo()
     xsimd::run_benchmark_1op(xsimd::atan_fn(), std::cout, size, 1000, xsimd::init_method::arctrigo);
 }
 
-void benchmark_hyperbolic()
+static void benchmark_hyperbolic()
 {
     std::size_t size = 20000;
     xsimd::run_benchmark_1op(xsimd::sinh_fn(), std::cout, size, 1000);
@@ -56,7 +58,7 @@ void benchmark_hyperbolic()
     xsimd::run_benchmark_1op(xsimd::atanh_fn(), std::cout, size, 100);
 }
 
-void benchmark_power()
+static void benchmark_power()
 {
     std::size_t size = 20000;
     xsimd::run_benchmark_2op(xsimd::pow_fn(), std::cout, size, 1000);
@@ -65,7 +67,7 @@ void benchmark_power()
     xsimd::run_benchmark_2op(xsimd::hypot_fn(), std::cout, size, 1000);
 }
 
-void benchmark_rounding()
+static void benchmark_rounding()
 {
     std::size_t size = 20000;
     xsimd::run_benchmark_1op(xsimd::ceil_fn(), std::cout, size, 1000);
@@ -77,7 +79,7 @@ void benchmark_rounding()
 }
 
 #ifdef XSIMD_POLY_BENCHMARKS
-void benchmark_poly_evaluation()
+static void benchmark_poly_evaluation()
 {
     std::size_t size = 20000;
     xsimd::run_benchmark_1op(xsimd::horner_5_fn(), std::cout, size, 1000);
@@ -93,7 +95,7 @@ void benchmark_poly_evaluation()
 }
 #endif
 
-void benchmark_basic_math()
+static void benchmark_basic_math()
 {
     std::size_t size = 20000;
     xsimd::run_benchmark_2op(xsimd::fmod_fn(), std::cout, size, 1000);
@@ -109,7 +111,12 @@ void benchmark_basic_math()
 #endif
 }
 
-int main(int argc, char* argv[])
+
+#if defined(BUILD_MONOLITHIC)
+#define main		xsimd_benchmark_main
+#endif
+
+int main(int argc, const char** argv)
 {
     const std::map<std::string, std::pair<std::string, void (*)()>> fn_map = {
         { "op", { "arithmetic", benchmark_operation } },

@@ -22,6 +22,8 @@
 
 #include <xsimd/xsimd.hpp>
 
+#include "monolithic_examples.h"
+
 // helper function to write the rendered image as PPM file
 inline void writePPM(const std::string& fileName,
                      const int sizeX,
@@ -50,7 +52,6 @@ inline void writePPM(const std::string& fileName,
 
 namespace xsimd
 {
-
     template <class arch>
     inline batch<int, arch> mandel(const batch_bool<float, arch>& _active,
                                    const batch<float, arch>& c_re,
@@ -277,6 +278,11 @@ struct run_archlist<xsimd::arch_list<Arch...>>
         (void)std::initializer_list<int> { (run_arch<Arch>(bencher, x0, y0, x1, x1, width, height, maxIters, buffer), 0)... };
     }
 };
+
+
+#if defined(BUILD_MONOLITHIC)
+#define main		xsimd_sample_mandelbrot_main
+#endif
 
 int main()
 {
